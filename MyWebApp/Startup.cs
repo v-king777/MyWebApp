@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using MyWebApp.Middlewares;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -33,27 +34,7 @@ namespace MyWebApp
 
             app.UseRouting();
 
-            // Логгирование в текстовый файл
-            app.Use(async (context, next) =>
-            {
-                string logMessage = $"[{DateTime.Now}]: New request to http://" +
-                    $"{context.Request.Host.Value + context.Request.Path}{Environment.NewLine}";
-
-                string logFilePath = Path.Combine(_env.ContentRootPath, "Logs", "RequestLog.txt");
-
-                await File.AppendAllTextAsync(logFilePath, logMessage);
-
-                await next.Invoke();
-            });
-
-            // Логгирование в консоль
-            app.Use(async (context, next) =>
-            {
-                Console.WriteLine($"[{DateTime.Now}]: New request to http://" +
-                    $"{context.Request.Host.Value + context.Request.Path}");
-
-                await next.Invoke();
-            });
+            app.UseMiddleware<LoggingMiddleware>();
 
             // Обработчик для главной страницы
             app.UseEndpoints(endpoints =>
