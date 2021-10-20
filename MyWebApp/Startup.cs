@@ -1,9 +1,12 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MyWebApp.Middlewares;
+using MyWebApp.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,14 +18,22 @@ namespace MyWebApp
     public class Startup
     {
         private readonly IWebHostEnvironment _env;
+        private readonly IConfiguration _configuration;
 
-        public Startup(IWebHostEnvironment env)
+        public Startup(IWebHostEnvironment env, IConfiguration configuration)
         {
             _env = env;
+            _configuration = configuration;
         }
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSingleton<IUserInfoRepository, UserInfoRepository>();
+            
+            string connection = _configuration.GetConnectionString("DefaultConnection");
+
+            services.AddDbContext<MyWebAppContext>(options =>
+            options.UseSqlServer(connection), ServiceLifetime.Singleton);
         }
 
         public void Configure(IApplicationBuilder app)
