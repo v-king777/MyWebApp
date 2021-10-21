@@ -14,7 +14,7 @@ namespace MyWebApp.Middlewares
         private readonly IUserInfoRepository _repo;
 
         /// <summary>
-        ///  Middleware-компонент должен иметь конструктор, принимающий RequestDelegate
+        /// Middleware-компонент должен иметь конструктор, принимающий RequestDelegate
         /// </summary>
         public LoggingMiddleware(RequestDelegate next, IUserInfoRepository repo)
         {
@@ -23,7 +23,7 @@ namespace MyWebApp.Middlewares
         }
 
         /// <summary>
-        ///  Необходимо реализовать метод Invoke или InvokeAsync
+        /// Необходимо реализовать метод Invoke или InvokeAsync
         /// </summary>
         public async Task InvokeAsync(HttpContext context)
         {
@@ -37,7 +37,7 @@ namespace MyWebApp.Middlewares
             };
 
             await _repo.Add(userInfo);
-            
+
             LogConsole(context);
 
             await LogFile(context);
@@ -46,7 +46,7 @@ namespace MyWebApp.Middlewares
         }
 
         /// <summary>
-        /// Логируем в консль
+        /// Логирование в консоль
         /// </summary>
         private void LogConsole(HttpContext context)
         {
@@ -55,7 +55,7 @@ namespace MyWebApp.Middlewares
         }
 
         /// <summary>
-        /// Логиуем в файл
+        /// Логирование в файл
         /// </summary>
         private async Task LogFile(HttpContext context)
         {
